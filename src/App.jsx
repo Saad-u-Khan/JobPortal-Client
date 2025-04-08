@@ -14,6 +14,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import RecruiterHome from './pages/RecruiterHome'
 import CandidateJobList from './pages/CandidateJobList'
+import UpdateCandidateByRecruiter from './pages/UpdateCandidateByRecruiter'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Route path='/recruiter/:id/job/add' element={<AddJob/>}/>
         <Route path='/recruiter/:id/job/update/:jobId' element={<UpdateJob/>}/>
         <Route path='/recruiter/:id/candidates' element={<CandidateList/>}/>
+        <Route path='/recruiter/:id/candidate/update/:candidateId' element={<UpdateCandidateByRecruiter/>}/>
 
         <Route path='/about' element={<About/>}/>
         <Route path='/*' element={<PageNotFound/>}/>

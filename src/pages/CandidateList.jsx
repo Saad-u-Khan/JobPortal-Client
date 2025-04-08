@@ -11,7 +11,12 @@ function CandidateList() {
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/candidates");
+        const accessToken = sessionStorage.getItem("accessToken");
+        const response = await axios.get("http://localhost:8080/candidates", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setListOfCandidates(response.data);
       } catch (error) {
         console.error("Error fetching candidates:", error);
@@ -22,8 +27,13 @@ function CandidateList() {
 
   const handleDelete = async (id) => {
     try {
+      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
-        `http://localhost:8080/candidates/${id}`
+        `http://localhost:8080/candidates/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log(response);
       {
@@ -73,7 +83,7 @@ function CandidateList() {
                 <td>{candidate.location}</td>
                 <td>
                   <Link
-                    to={`/candidate/update/${candidate.id}`}
+                    to={`/recruiter/${id}/candidate/update/${candidate.id}`}
                     className="btn btn-dark me-1"
                   >
                     Update

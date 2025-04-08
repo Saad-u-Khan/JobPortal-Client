@@ -11,8 +11,13 @@ function CandidateHome() {
   useEffect(() => {
     const fetchCandidate = async () => {
       try {
+        const accessToken = sessionStorage.getItem("accessToken")
         const response = await axios.get(
-          `http://localhost:8080/candidates/${id}`
+          `http://localhost:8080/candidates/${id}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
         setCandidate(response.data);
         console.log(response);

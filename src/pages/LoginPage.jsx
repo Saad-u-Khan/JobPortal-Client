@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Error from "../components/Error";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode'
 
 function LoginPage({ loginType }) {
   const [values, setValues] = useState({
@@ -19,13 +20,11 @@ function LoginPage({ loginType }) {
           "http://localhost:8080/candidates/login",
           values
         );
-        
-          sessionStorage.setItem("accessToken", response.data);
-          console.log(response);
-        const id = response.data.id;
-        navigate(`/candidate/home/${id}`);
-        
-        
+        const { accessToken } = response.data;
+        sessionStorage.setItem("accessToken", accessToken);
+        const decodedToken = jwtDecode(accessToken);
+        console.log(response);
+        navigate(`/candidate/home/${decodedToken.id}`);
       } catch (error) {
         setFlag(true);
         setValues({
@@ -41,8 +40,10 @@ function LoginPage({ loginType }) {
           values
         );
         console.log(response);
-        const id = response.data.id;
-        navigate(`/recruiter/home/${id}`);
+        const { accessToken } = response.data;
+        sessionStorage.setItem("accessToken", accessToken);
+        const decodedToken = jwtDecode(accessToken);
+        navigate(`/recruiter/home/${decodedToken.id}`);
       } catch (error) {
         setFlag(true);
         setValues({
@@ -106,14 +107,13 @@ function LoginPage({ loginType }) {
           <button className="btn btn-dark w-100 py-2 mb-2" type="submit">
             Sign in
           </button>
-          {loginType === 'candidate' && (
+          {loginType === "candidate" && (
             <div className="text-center mt-2 login-text">
               <p>
                 Don't have an account? <a href="/register">Sign up</a>
               </p>
             </div>
           )}
-          
         </form>
       </div>
     </div>

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import CandidateDashboard from "../components/CandidateDashboard";
+import RecruiterDashboard from "../components/RecruiterDashboard";
 
-function UpdateCandidate() {
-  let { id } = useParams();
+function UpdateCandidateByRecruiter() {
+  let { id, candidateId } = useParams();
   const [values, setValues] = useState({
     name: "",
     contact: "",
@@ -21,7 +21,7 @@ function UpdateCandidate() {
       try {
         const accessToken = sessionStorage.getItem("accessToken");
         const response = await axios.get(
-          `http://localhost:8080/candidates/${id}`, {
+          `http://localhost:8080/candidates/${candidateId}`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -41,7 +41,7 @@ function UpdateCandidate() {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8080/candidates/${id}`,
+        `http://localhost:8080/candidates/${candidateId}`,
         values, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -49,7 +49,7 @@ function UpdateCandidate() {
         }
       );
       console.log(response);
-      navigate(`/candidate/home/${id}`);
+      navigate(`/recruiter/${id}/candidates`);
     } catch (error) {
       console.error("Error updating candidate:", error);
     }
@@ -58,7 +58,7 @@ function UpdateCandidate() {
   return (
     <div>
       
-      <CandidateDashboard id={id} />
+      <RecruiterDashboard id={id} />
         <div className="mt-3 mx-5">
           <div className="col-md-6">
           
@@ -164,7 +164,7 @@ function UpdateCandidate() {
               </form>
             </div>
             <div className="d-flex justify-content-end">
-              <Link to={`/candidate/home/${id}`} className="btn btn-secondary me-1 mb-3">
+              <Link to={`/recruiter/${id}/candidates`} className="btn btn-secondary me-1 mb-3">
                 Close
               </Link>
               <button
@@ -181,4 +181,4 @@ function UpdateCandidate() {
   );
 }
 
-export default UpdateCandidate;
+export default UpdateCandidateByRecruiter;
