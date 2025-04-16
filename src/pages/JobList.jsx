@@ -6,6 +6,7 @@ import ApplyButton from "./ApplyButton";
 function JobList({ id }) {
   const [listOfJobs, setListOfJobs] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
+  const [appliedJobs, setAppliedJobs] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -20,6 +21,18 @@ function JobList({ id }) {
     fetchJobs();
   }, [listOfJobs]);
 
+  useEffect(() => {
+    const fetchAppliedJobs = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/applies/candidate/${id}`);
+        setAppliedJobs(response.data.map((apply) => apply.JobId));
+      } catch (error) {
+        console.error("Error fetching applied jobs:", error);
+      }
+    };
+    fetchAppliedJobs();
+  }, [id]);
+
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:8080/jobs/${id}`);
@@ -30,17 +43,29 @@ function JobList({ id }) {
     }
   };
 
+  const jobsToDisplay = location.pathname === `/candidate/${id}/jobs`
+  ? listOfJobs.filter((job) => !appliedJobs.includes(job.id))
+  : listOfJobs;
+
   return (
     <div>
-      <h2 className="mt-3 mx-5">Job Postings</h2>
+      <h2 className="mt-3 mx-5">{location.pathname === `/recruiter/home/${id}`
+        ? "Jobs Posted" : "Job Posting For You"}</h2>
       <div className="d-flex justify-content-end me-5">
         {location.pathname === `/recruiter/home/${id}` && (
           <Link to={`/recruiter/${id}/job/add`} className="btn btn-success">
             Add a New Job
           </Link>
         )}
+        {location.pathname === `/candidate/${id}/jobs` && (
+          <Link to={`/candidate/${id}/my-applies`} 
+                className="btn btn-success"
+                state={{listOfJobs}}>
+            My Applies
+          </Link>
+        )}
       </div>
-      {listOfJobs.map((job, index) => {
+      {jobsToDisplay.map((job, index) => {
         const dateTime = new Date(job.createdAt);
         const dateOnly = dateTime.toLocaleDateString();
         return (

@@ -1,9 +1,14 @@
 import React from "react";
 import WorkIcon from "@mui/icons-material/Work";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    sessionStorage.removeItem("accessToken");
+    navigate('/');
+  }
   return (
     <nav
       className="navbar fixed-top navbar-expand-lg bg-body-tertiary"
@@ -27,7 +32,7 @@ function Navbar() {
         {(location.pathname.startsWith('/candidate/') || location.pathname.startsWith('/recruiter/')) && (
           <> 
             <div className="justify-content-end">
-              <button className="btn btn-warning">Logout</button>
+              <button onClick={handleLogout} className="btn btn-warning">Logout</button>
             </div>
           </>
         )}
