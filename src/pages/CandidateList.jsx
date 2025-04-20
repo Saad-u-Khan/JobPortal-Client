@@ -7,6 +7,7 @@ import RecruiterDashboard from "../components/RecruiterDashboard";
 function CandidateList() {
   const { id } = useParams();
   const [listOfCandidates, setListOfCandidates] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState({});
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -24,6 +25,31 @@ function CandidateList() {
     };
     fetchCandidates();
   }, [listOfCandidates]);
+
+  useEffect(() => {
+    const fetchAppliedJobs = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/applies/getAllApplies`
+        );
+      
+      //apply comes from the response.data
+      const jobsMapping = response.data.reduce((acc, apply) => {
+        //creating an accumulator array with specific candidate id if it does not exist
+        acc[apply.CandidateId] = acc[apply.CandidateId] || [];
+        //pushing the job id to that specific (candidate id) accumulator array created above
+        acc[apply.CandidateId].push(apply.JobId);
+        return acc;
+      }, {});
+      
+      setAppliedJobs(jobsMapping);
+      } catch (error) {
+        console.error("Error fetching applied jobs", error);
+      }
+    };
+    
+    fetchAppliedJobs();
+  }, []);
 
   const handleDelete = async (id) => {
     try {
@@ -66,6 +92,7 @@ function CandidateList() {
             <th scope="col">Skills</th>
             <th scope="col">Experience (in years)</th>
             <th scope="col">Location</th>
+            <th scope="col">Applied Jobs (Job Id)</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -81,6 +108,7 @@ function CandidateList() {
                 <td>{candidate.skills}</td>
                 <td>{candidate.experience}</td>
                 <td>{candidate.location}</td>
+                <td>{appliedJobs[candidate.id]?.join(', ') || 'N/A'}</td>
                 <td>
                   <Link
                     to={`/recruiter/${id}/candidate/update/${candidate.id}`}
