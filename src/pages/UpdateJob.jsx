@@ -17,11 +17,16 @@ function UpdateJob() {
     location: "",
   });
   const navigate = useNavigate();
+  const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/jobs/${jobId}`);
+        const response = await axios.get(`http://localhost:8080/jobs/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setValues(response.data);
         console.log(response);
       } catch (error) {
@@ -36,7 +41,11 @@ function UpdateJob() {
     try {
       const response = await axios.put(
         `http://localhost:8080/jobs/${jobId}`,
-        values
+        values , {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log(response);
       navigate(`/recruiter/home/${recruiterId}`);

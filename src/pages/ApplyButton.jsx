@@ -3,11 +3,16 @@ import axios from "axios";
 
 function ApplyButton({ candidateId, jobId }) {
   const [applied, setApplied] = useState(false);
+  const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
     const checkApplicationStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/applies/check/${candidateId}/${jobId}`);
+        const response = await axios.get(`http://localhost:8080/applies/check/${candidateId}/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         if (response.data.applied) {
           setApplied(true);
         }
@@ -22,9 +27,13 @@ function ApplyButton({ candidateId, jobId }) {
     try {
       const response = await axios.post(`http://localhost:8080/applies/${candidateId}`, {
         jobId: jobId
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       
-        console.log(response);
+      console.log(response);
       setApplied(true);
       
       

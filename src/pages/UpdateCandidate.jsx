@@ -15,11 +15,11 @@ function UpdateCandidate() {
     location: "",
   });
   const navigate = useNavigate();
+  const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchCandidate = async () => {
       try {
-        const accessToken = sessionStorage.getItem("accessToken");
         const response = await axios.get(
           `http://localhost:8080/candidates/${id}`, {
             headers: {
@@ -39,7 +39,6 @@ function UpdateCandidate() {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.put(
         `http://localhost:8080/candidates/${id}`,
         values, {

@@ -15,8 +15,13 @@ function MyApplies() {
   useEffect(() => {
     const fetchAppliedJobs = async () => {
       try {
+        const accessToken = sessionStorage.getItem("accessToken");
         const response = await axios.get(
-          `http://localhost:8080/applies/candidate/${id}`
+          `http://localhost:8080/applies/candidate/${id}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
         setAppliedJobs(response.data.map((apply) => apply.JobId));
       } catch (error) {

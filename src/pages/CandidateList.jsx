@@ -8,11 +8,11 @@ function CandidateList() {
   const { id } = useParams();
   const [listOfCandidates, setListOfCandidates] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState({});
+  const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const accessToken = sessionStorage.getItem("accessToken");
         const response = await axios.get("http://localhost:8080/candidates", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -30,7 +30,11 @@ function CandidateList() {
     const fetchAppliedJobs = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/applies/getAllApplies`
+          `http://localhost:8080/applies/getAllApplies`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
       
       //apply comes from the response.data
@@ -53,7 +57,6 @@ function CandidateList() {
 
   const handleDelete = async (id) => {
     try {
-      const accessToken = sessionStorage.getItem("accessToken");
       const response = await axios.delete(
         `http://localhost:8080/candidates/${id}`, {
           headers: {

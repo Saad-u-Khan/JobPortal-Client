@@ -8,14 +8,19 @@ function JobList({ id }) {
   const [openIndex, setOpenIndex] = useState(null);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const location = useLocation();
+  const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/jobs");
+        const response = await axios.get("http://localhost:8080/jobs", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setListOfJobs(response.data);
       } catch (error) {
-        console.error("Error fetching candidates:", error);
+        console.error("Error fetching jobs:", error);
       }
     };
     fetchJobs();
@@ -24,7 +29,11 @@ function JobList({ id }) {
   useEffect(() => {
     const fetchAppliedJobs = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/applies/candidate/${id}`);
+        const response = await axios.get(`http://localhost:8080/applies/candidate/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setAppliedJobs(response.data.map((apply) => apply.JobId));
       } catch (error) {
         console.error("Error fetching applied jobs:", error);
@@ -35,7 +44,11 @@ function JobList({ id }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/jobs/${id}`);
+      const response = await axios.delete(`http://localhost:8080/jobs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log(response);
       setListOfJobs((oldJobs) => oldJobs.filter((job) => job.id !== id));
     } catch (error) {

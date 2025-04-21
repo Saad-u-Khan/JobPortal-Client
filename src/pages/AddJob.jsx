@@ -12,7 +12,12 @@ function AddJob() {
     const handleClick = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/jobs', values);
+            const accessToken = sessionStorage.getItem("accessToken");
+            const response = await axios.post('http://localhost:8080/jobs', values, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
             console.log(response);
             navigate(`/recruiter/home/${id}`);
         } catch (error) {
